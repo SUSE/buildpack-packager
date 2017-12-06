@@ -30,10 +30,19 @@ describe Buildpack::ManifestValidator do
         expect(validator.errors).to be_empty
       end
     end
+
+    context 'with a manifest with windows stacks' do
+      let (:manifest_file_name) { 'manifest_windows.yml' }
+
+      it 'reports valid manifests correctly' do
+        expect(validator.valid?).to be(true)
+        expect(validator.errors).to be_empty
+      end
+    end
   end
 
-  context 'with a manifest with an invalid md5 key' do
-    let(:manifest_file_name) { 'manifest_invalid-md6.yml' }
+  context 'with a manifest with an invalid sha256 key' do
+    let(:manifest_file_name) { 'manifest_invalid-sha224.yml' }
 
     it 'reports invalid manifests correctly' do
       expect(validator.valid?).to be(false)
@@ -41,7 +50,7 @@ describe Buildpack::ManifestValidator do
     end
 
     context 'and incorrect defaults' do
-      let(:manifest_file_name) { 'manifest_invalid-md6_and_defaults.yml' }
+      let(:manifest_file_name) { 'manifest_invalid-sha224_and_defaults.yml' }
 
       it 'reports manifest parser errors only' do
         expect(validator).to_not receive(:validate_default_versions)
